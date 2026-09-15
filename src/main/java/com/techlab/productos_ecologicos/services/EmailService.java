@@ -22,6 +22,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class EmailService {
 
+        @Value("${app.base-url}")
+        private String baseUrl;
+
         @Value("${spring.mail.username}")
         private String emailAdministrador;
 
@@ -49,8 +52,7 @@ public class EmailService {
                         String email,
                         String token) {
                 log.info(">>> EMAIL SERVICE EJECUTADO. Destinatario: {}", email);
-                String enlaceConfirmacion = "http://localhost:8080/auth/confirmar-email?token="
-                                + token;
+                String enlaceConfirmacion = baseUrl + "/auth/confirmar-email?token=" + token;
 
                 SimpleMailMessage mensaje = new SimpleMailMessage();
 
