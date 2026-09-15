@@ -44,7 +44,7 @@ public class DiagnosticoController {
     public ResponseEntity<ApiResponse<String>> diagnosticarSmtp() {
 
         String host = "smtp.gmail.com";
-        int port = 587;
+        int port = 465;
 
         try (Socket socket = new Socket()) {
 
