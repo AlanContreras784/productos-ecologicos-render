@@ -110,6 +110,13 @@
 			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
 
+		<!-- SDK de Resend para envío de correos mediante API HTTPS -->
+		<dependency>
+			<groupId>com.resend</groupId>
+			<artifactId>resend-java</artifactId>
+			<version>4.10.0</version>
+		</dependency>
+
 		<!-- Permite cargar variables de entorno desde un archivo .env -->
 		<dependency>
 			<groupId>me.paulschwarz</groupId>
