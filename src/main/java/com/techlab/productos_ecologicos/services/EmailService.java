@@ -36,14 +36,13 @@ public class EmailService {
     private String baseUrl;
 
     /**
-     * Correo administrativo de Cero Huella.
-     *
-     * Se utiliza para recibir las notificaciones
-     * de nuevos registros.
-     */
-    @Value("${MAIL_USERNAME}")
+    * Correo administrativo que recibe las notificaciones
+    * de nuevos registros.
+    *
+    * El valor se obtiene de la variable RESEND_ADMIN_EMAIL.
+    */
+    @Value("${RESEND_ADMIN_EMAIL}")
     private String emailAdministrador;
-
     private final Resend resend;
 
     /**
@@ -127,7 +126,7 @@ public class EmailService {
      * Envía una notificación al correo de Cero Huella
      * informando que se registró un nuevo usuario.
      *
-     * El correo administrativo se obtiene de MAIL_USERNAME.
+     * El correo administrativo se obtiene de RESEND_ADMIN_EMAIL.
      *
      * @param username username del nuevo usuario.
      * @param email email del nuevo usuario.
@@ -161,7 +160,7 @@ public class EmailService {
             CreateEmailOptions params =
                     CreateEmailOptions.builder()
                             .from("onboarding@resend.dev")
-                            .to("alancontreras784@gmail.com")
+                            .to(emailAdministrador)
                             .subject(
                                     "Cero Huella - Nuevo usuario registrado")
                             .text(cuerpoEmail)
