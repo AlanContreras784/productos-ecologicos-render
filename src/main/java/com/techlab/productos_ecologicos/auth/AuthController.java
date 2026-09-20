@@ -16,6 +16,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import java.net.URI;
+
 /**
  * Controller encargado de gestionar la autenticación.
  *
@@ -35,6 +39,9 @@ import lombok.RequiredArgsConstructor;
 @Tag(name = "Autenticación", description = "Operaciones relacionadas con registro e inicio de sesión mediante JWT.")
 public class AuthController {
         private final AuthService authService;
+
+        @Value("${app.frontend-url}")
+        private String frontendUrl;
 
         /**
          * Permite autenticar un usuario existente.
@@ -100,23 +107,45 @@ public class AuthController {
          * de confirmación.
          *
          * Una vez validado el token, la cuenta queda habilitada
-         * y el usuario puede iniciar sesión.
+         * y el usuario es redirigido al frontend.
          */
-        @Operation(summary = "Confirmar email", description = "Confirma la dirección de email mediante el token recibido.")
+        @Operation(
+                summary = "Confirmar email",
+                description = "Confirma la dirección de email mediante el token recibido."
+        )
         @ApiResponses({
-                        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Email confirmado correctamente"),
-                        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Token inválido o expirado")
+                @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                        responseCode = "302",
+                        description = "Email confirmado correctamente y usuario redirigido al frontend"
+                ),
+                @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                        responseCode = "400",
+                        description = "Token inválido o expirado"
+                )
         })
         @GetMapping("/confirmar-email")
-        public ResponseEntity<ApiResponse<Void>> confirmarEmail(
-                        @RequestParam String token) {
+        public ResponseEntity<Void> confirmarEmail(
+                @RequestParam String token) {
 
-                authService.confirmarEmail(token);
+        // Validamos el token y habilitamos la cuenta.
+        authService.confirmarEmail(token);
 
-                return ResponseEntity.ok(
-                                new ApiResponse<>(
-                                                true,
-                                                "Email confirmado correctamente. Ya puedes iniciar sesión.",
-                                                null));
-        }
+        // Construimos la URL de la página de confirmación
+        // utilizando la variable FRONTEND_URL.
+        String urlConfirmacion =
+                frontendUrl.endsWith("/")
+                        ? frontendUrl + "confirmacion.html"
+                        : frontendUrl + "/confirmacion.html";
+
+        // Indicamos al navegador que debe dirigirse
+        // a la página de confirmación del frontend.
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(URI.create(urlConfirmacion));
+
+        // Respondemos con una redirección HTTP.
+        return ResponseEntity
+                .status(HttpStatus.FOUND)
+                .headers(headers)
+                .build();
+        }       
 }
