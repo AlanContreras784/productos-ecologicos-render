@@ -10,34 +10,11 @@ import com.techlab.productos_ecologicos.models.Producto;
 import com.techlab.productos_ecologicos.services.CategoriaService;
 import com.techlab.productos_ecologicos.services.ProductoService;
 
-import org.springframework.beans.factory.annotation.Value;
-
 @SpringBootApplication
 public class ProductosEcologicosApplication {
 
-    @Value("${spring.mail.username}")
-    private String mailUsername;
-
-    @Value("${spring.mail.password}")
-    private String mailPassword;
-
     public static void main(String[] args) {
         SpringApplication.run(ProductosEcologicosApplication.class, args);
-    }
-
-    @Bean
-    CommandLineRunner verificarConfiguracionMail() {
-        return args -> {
-
-            System.out.println("======================================");
-            System.out.println("VERIFICACIÓN CONFIGURACIÓN SMTP");
-            System.out.println("MAIL USERNAME: " + mailUsername);
-            System.out.println("MAIL PASSWORD CONFIGURADO: "
-                    + (mailPassword != null && !mailPassword.isBlank()));
-            System.out.println("MAIL PASSWORD LONGITUD: "
-                    + (mailPassword != null ? mailPassword.length() : 0));
-            System.out.println("======================================");
-        };
     }
 
     @Bean
