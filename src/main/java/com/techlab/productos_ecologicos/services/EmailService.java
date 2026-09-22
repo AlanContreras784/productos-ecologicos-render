@@ -7,6 +7,7 @@ import com.resend.services.emails.model.CreateEmailResponse;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.scheduling.annotation.Async;
 
 import java.time.LocalDateTime;
 
@@ -68,6 +69,7 @@ public class EmailService {
      * @param email dirección de correo del usuario.
      * @param token token generado para confirmar la cuenta.
      */
+    @Async
     public void enviarEmailConfirmacion(
             String email,
             String token) {
