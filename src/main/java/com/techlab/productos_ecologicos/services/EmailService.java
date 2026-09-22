@@ -135,6 +135,7 @@ public class EmailService {
      * @param nombre nombre del nuevo usuario.
      * @param apellido apellido del nuevo usuario.
      */
+    @Async
     public void enviarNotificacionNuevoRegistro(
             String username,
             String email,
