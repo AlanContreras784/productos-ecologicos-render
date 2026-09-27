@@ -134,8 +134,8 @@ public class AuthController {
         // utilizando la variable FRONTEND_URL.
         String urlConfirmacion =
                 frontendUrl.endsWith("/")
-                        ? frontendUrl + "confirmacion.html"
-                        : frontendUrl + "/confirmacion.html";
+                        ? frontendUrl + "pages/confirmacion.html"
+                        : frontendUrl + "/pages/confirmacion.html";
 
         // Indicamos al navegador que debe dirigirse
         // a la página de confirmación del frontend.
