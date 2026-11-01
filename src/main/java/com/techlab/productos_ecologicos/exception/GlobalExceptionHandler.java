@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.techlab.productos_ecologicos.dto.ApiError;
+import com.techlab.productos_ecologicos.exception.PedidoCarritoVacioException;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -151,6 +152,20 @@ public class GlobalExceptionHandler {
         );
     }
 
+    
+    // Se ejecuta cuando una operación no puede realizarse
+    // debido al estado actual del recurso.
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ApiError> manejarEstadoInvalido(
+            IllegalStateException ex) {
+
+        return crearRespuestaError(
+                HttpStatus.CONFLICT,
+                ex.getMessage()
+        );
+    }
+
+
     // Captura cualquier excepción no controlada y devuelve un error interno del servidor.
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> manejarExcepcionGenerica(Exception ex) {
@@ -159,6 +174,34 @@ public class GlobalExceptionHandler {
                 "Ocurrió un error inesperado: " + ex.getMessage()
         );
     }
+
+    // Maneja los intentos de crear un pedido utilizando un carrito vacío.
+        @ExceptionHandler(PedidoCarritoVacioException.class)
+        public ResponseEntity<ApiError> manejarPedidoCarritoVacio(
+                PedidoCarritoVacioException ex) {
+
+        return crearRespuestaError(
+                HttpStatus.BAD_REQUEST,
+                ex.getMessage()
+        );
+        }
+        
+        /**
+         * Maneja los intentos de modificar o eliminar un carrito
+         * que tiene un pedido pendiente.
+         *
+         * @param ex excepción que contiene el motivo del bloqueo.
+         * @return respuesta HTTP 409 Conflict.
+         */
+        @ExceptionHandler(CarritoConPedidoPendienteException.class)
+        public ResponseEntity<ApiError> manejarCarritoConPedidoPendiente(
+                CarritoConPedidoPendienteException ex) {
+
+                return crearRespuestaError(
+                        HttpStatus.CONFLICT,
+                        ex.getMessage()
+                );
+        }
 
     // Crea una respuesta de error estandarizada para toda la API.
     private ResponseEntity<ApiError> crearRespuestaError(
@@ -176,6 +219,5 @@ public class GlobalExceptionHandler {
                 .status(status)
                 .body(apiError);
     }
-
     
 }
